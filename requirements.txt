@@ -1,0 +1,42 @@
+# Core Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# Database & ORM
+supabase>=2.0.0,<3.0.0  # Allow flexible versioning
+psycopg2-binary==2.9.9
+sqlalchemy==2.0.23
+alembic==1.12.1
+
+# Authentication & Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+
+# Data Validation
+pydantic==2.5.0
+pydantic-settings==2.1.0
+email-validator==2.1.0
+
+# API & Communication
+httpx  # Let supabase choose compatible version
+python-dotenv==1.0.0
+
+# PDF Generation
+reportlab==4.0.7
+pypdf2==3.0.1
+
+# Excel Export
+openpyxl==3.1.2
+xlsxwriter==3.1.9
+
+# Date & Time
+python-dateutil==2.8.2
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+
+# Development Tools
+black==23.11.0
+flake8==6.1.0
