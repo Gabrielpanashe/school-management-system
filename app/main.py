@@ -6,7 +6,8 @@ from app.config import get_settings
 from app.api.v1 import (
     auth, schools, academic, 
     students, subjects, attendance, 
-    grades, reports
+    grades, reports, finance, 
+    finance_reports
 )
 
 settings = get_settings()
@@ -70,3 +71,5 @@ app.include_router(subjects.router, prefix="/api/v1")
 app.include_router(attendance.router, prefix="/api/v1")
 app.include_router(grades.router, prefix="/api/v1")
 app.include_router(reports.router, prefix="/api/v1")
+app.include_router(finance.router, prefix="/api/v1")
+app.include_router(finance_reports.router, prefix="/api/v1")
