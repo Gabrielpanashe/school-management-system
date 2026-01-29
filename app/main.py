@@ -3,7 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 
 # Import routers
-from app.api.v1 import auth, schools, academic, students, subjects
+from app.api.v1 import (
+    auth, schools, academic, 
+    students, subjects, attendance, 
+    grades, reports
+)
 
 settings = get_settings()
 
@@ -63,3 +67,6 @@ app.include_router(schools.router, prefix="/api/v1")
 app.include_router(academic.router, prefix="/api/v1")
 app.include_router(students.router, prefix="/api/v1")
 app.include_router(subjects.router, prefix="/api/v1")
+app.include_router(attendance.router, prefix="/api/v1")
+app.include_router(grades.router, prefix="/api/v1")
+app.include_router(reports.router, prefix="/api/v1")
