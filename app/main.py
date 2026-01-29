@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 
 # Import routers
-from app.api.v1 import auth, schools
+from app.api.v1 import auth, schools, academic, students, subjects
 
 settings = get_settings()
 
@@ -57,7 +57,9 @@ async def health_check():
 # Register API Routers
 # ==========================================
 
-# Include authentication routes
+# Include routers
 app.include_router(auth.router, prefix="/api/v1")
-# Include school management routes
 app.include_router(schools.router, prefix="/api/v1")
+app.include_router(academic.router, prefix="/api/v1")
+app.include_router(students.router, prefix="/api/v1")
+app.include_router(subjects.router, prefix="/api/v1")
