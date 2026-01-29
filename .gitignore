@@ -60,6 +60,7 @@ logs/
 htmlcov/
 .coverage
 .pytest_cache/
+tests/
 
 # Next.js (Frontend)
 frontend/.next/
