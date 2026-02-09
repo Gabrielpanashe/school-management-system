@@ -20,9 +20,13 @@ frontend/.env
 Thumbs.db
 Desktop.ini
 
-# Git
-.git/
-!/ .git
+# Database
+*.db
+*.sqlite3
+
+# Logs
+*.log
+backend/server.log
 
 # Artifacts
 brain/

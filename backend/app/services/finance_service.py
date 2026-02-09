@@ -67,6 +67,30 @@ class FinanceService:
             query = query.filter(Payment.term_id == term_id)
         return query.all()
 
+    @staticmethod
+    def get_all_payments(db: Session, school_id: UUID, limit: int = 50) -> List[Payment]:
+        return db.query(Payment).filter(Payment.school_id == school_id).order_by(Payment.payment_date.desc()).limit(limit).all()
+
+    @staticmethod
+    def get_revenue_stats(db: Session, school_id: UUID):
+        # Total revenue collected
+        total_revenue = db.query(func.sum(Payment.amount_paid)).filter(Payment.school_id == school_id).scalar() or 0
+        
+        # This month's revenue
+        from datetime import date
+        today = date.today()
+        month_start = date(today.year, today.month, 1)
+        monthly_revenue = db.query(func.sum(Payment.amount_paid)).filter(
+            Payment.school_id == school_id,
+            Payment.payment_date >= month_start
+        ).scalar() or 0
+        
+        return {
+            "total_revenue": total_revenue,
+            "monthly_revenue": monthly_revenue,
+            # We could add more complex trends here later
+        }
+
     # --- Balance Calculations ---
 
     @staticmethod

@@ -68,6 +68,30 @@ def get_student_payments(
         
     return FinanceService.get_student_payments(db, student_id)
 
+@router.get("/payments/all", response_model=List[PaymentResponse])
+def get_all_payments(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    """
+    List all recent payments for the school. Only staff.
+    """
+    if current_user.role not in ["super_admin", "school_admin", "bursar"]:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    return FinanceService.get_all_payments(db, current_user.school_id)
+
+@router.get("/stats")
+def get_finance_stats(
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user)
+):
+    """
+    Get high-level financial stats.
+    """
+    if current_user.role not in ["super_admin", "school_admin", "bursar"]:
+        raise HTTPException(status_code=403, detail="Forbidden")
+    return FinanceService.get_revenue_stats(db, current_user.school_id)
+
 # --- Balances ---
 
 @router.get("/balance/{student_id}", response_model=FeeBalanceResponse)

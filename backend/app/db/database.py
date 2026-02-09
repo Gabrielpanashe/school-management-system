@@ -7,12 +7,14 @@ settings = get_settings()
 
 # Create database engine
 # echo=True means it will print SQL queries (useful for debugging)
+# Create database engine
+connect_args = {"check_same_thread": False} if settings.DATABASE_URL.startswith("sqlite") else {}
+
 engine = create_engine(
     settings.DATABASE_URL,
     echo=settings.DEBUG,
-    pool_pre_ping=True,  # Check connection before using
-    pool_size=10,        # Number of connections to maintain
-    max_overflow=20      # Max extra connections if pool is full
+    pool_pre_ping=True,
+    connect_args=connect_args
 )
 
 # Session factory - creates database sessions

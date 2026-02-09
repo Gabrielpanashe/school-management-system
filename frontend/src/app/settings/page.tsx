@@ -1,20 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     School,
     User,
     Bell,
     Shield,
     Save,
-    Globe,
     Mail,
     Phone,
-    MapPin
+    MapPin,
+    Loader2,
+    CheckCircle2
 } from "lucide-react";
+import { apiFetch } from "@/lib/api";
 
 export default function SettingsPage() {
     const [activeSection, setActiveSection] = useState("school");
+    const [school, setSchool] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState(false);
 
     const sections = [
         { id: "school", name: "School Profile", icon: School },
@@ -22,6 +29,63 @@ export default function SettingsPage() {
         { id: "notifications", name: "Notifications", icon: Bell },
         { id: "privacy", name: "Security & Privacy", icon: Shield },
     ];
+
+    useEffect(() => {
+        const fetchSchool = async () => {
+            try {
+                setLoading(true);
+                // First get current user to find school_id
+                const user = await apiFetch("/auth/me");
+                if (user.school_id) {
+                    const schoolData = await apiFetch(`/schools/${user.school_id}`);
+                    setSchool(schoolData);
+                }
+            } catch (err: any) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchSchool();
+    }, []);
+
+    const handleSave = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!school) return;
+
+        try {
+            setSaving(true);
+            setSuccess(false);
+            const formData = new FormData(e.target as HTMLFormElement);
+            const updateData = {
+                name: formData.get("name"),
+                email: formData.get("email"),
+                phone: formData.get("phone"),
+                address: formData.get("address"),
+            };
+
+            await apiFetch(`/schools/${school.id}`, {
+                method: "PATCH",
+                body: JSON.stringify(updateData)
+            });
+
+            setSuccess(true);
+            setTimeout(() => setSuccess(false), 3000);
+        } catch (err: any) {
+            alert("Error saving settings: " + err.message);
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="h-64 flex flex-col items-center justify-center gap-4 bg-white rounded-xl border border-gray-100">
+                <Loader2 className="w-8 h-8 text-brand-green animate-spin" />
+                <p className="text-gray-500 font-medium">Loading settings...</p>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6">
@@ -38,8 +102,8 @@ export default function SettingsPage() {
                             key={s.id}
                             onClick={() => setActiveSection(s.id)}
                             className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-semibold transition-all ${activeSection === s.id
-                                    ? "bg-brand-navy text-white shadow-md"
-                                    : "text-gray-500 hover:bg-gray-100"
+                                ? "bg-brand-navy text-white shadow-md"
+                                : "text-gray-500 hover:bg-gray-100"
                                 }`}
                         >
                             <s.icon className="w-5 h-5" />
@@ -50,7 +114,7 @@ export default function SettingsPage() {
 
                 {/* Main Settings Content */}
                 <div className="lg:col-span-3">
-                    <div className="card space-y-8">
+                    <form onSubmit={handleSave} className="card space-y-8">
                         {activeSection === "school" && (
                             <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
                                 <h3 className="text-lg font-bold text-brand-navy border-b pb-4 mb-6">School Profile</h3>
@@ -63,7 +127,8 @@ export default function SettingsPage() {
                                                 <School className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                                                 <input
                                                     type="text"
-                                                    defaultValue="Antigravity International School"
+                                                    name="name"
+                                                    defaultValue={school?.name}
                                                     className="pl-10 w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
                                                 />
                                             </div>
@@ -72,8 +137,9 @@ export default function SettingsPage() {
                                             <label className="block text-sm font-medium text-gray-700 mb-2">Registration ID</label>
                                             <input
                                                 type="text"
-                                                defaultValue="REG-2026-X8"
-                                                className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
+                                                disabled
+                                                defaultValue={school?.id.slice(0, 8).toUpperCase()}
+                                                className="w-full bg-gray-100 border border-gray-100 rounded-lg px-3 py-2 text-sm outline-none cursor-not-allowed"
                                             />
                                         </div>
                                     </div>
@@ -85,7 +151,8 @@ export default function SettingsPage() {
                                                 <Mail className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                                                 <input
                                                     type="email"
-                                                    defaultValue="admin@antigravity.edu"
+                                                    name="email"
+                                                    defaultValue={school?.email}
                                                     className="pl-10 w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
                                                 />
                                             </div>
@@ -96,7 +163,8 @@ export default function SettingsPage() {
                                                 <Phone className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                                                 <input
                                                     type="text"
-                                                    defaultValue="+263 77 123 4567"
+                                                    name="phone"
+                                                    defaultValue={school?.phone}
                                                     className="pl-10 w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
                                                 />
                                             </div>
@@ -109,7 +177,8 @@ export default function SettingsPage() {
                                             <MapPin className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
                                             <textarea
                                                 rows={3}
-                                                defaultValue="123 Innovation Drive, Tech District, Harare, Zimbabwe"
+                                                name="address"
+                                                defaultValue={school?.address}
                                                 className="pl-10 w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-brand-green"
                                             />
                                         </div>
@@ -122,20 +191,29 @@ export default function SettingsPage() {
                             <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
                                 <h3 className="text-lg font-bold text-brand-navy border-b pb-4 mb-6">User Profile</h3>
                                 <p className="text-sm text-gray-500 italic pb-6">Your personal contact information and preferences.</p>
-                                {/* Similar form fields for user account */}
                                 <div className="p-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-100 flex items-center justify-center text-gray-400">
                                     Account fields coming soon...
                                 </div>
                             </div>
                         )}
 
-                        <div className="pt-8 border-t flex justify-end">
-                            <button className="btn-primary flex items-center gap-2 px-8">
-                                <Save className="w-5 h-5" />
-                                Save Changes
+                        <div className="pt-8 border-t flex justify-end items-center gap-4">
+                            {success && (
+                                <span className="text-green-600 text-sm font-bold flex items-center gap-2">
+                                    <CheckCircle2 className="w-4 h-4" />
+                                    Settings saved!
+                                </span>
+                            )}
+                            <button
+                                type="submit"
+                                disabled={saving}
+                                className="btn-primary flex items-center gap-2 px-8 disabled:opacity-50"
+                            >
+                                {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                                {saving ? "Saving..." : "Save Changes"}
                             </button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

@@ -1,5 +1,4 @@
-from sqlalchemy import Column, String, DateTime, ForeignKey, Float, Text
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, DateTime, ForeignKey, Float, Text, Uuid
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import uuid
@@ -12,10 +11,10 @@ class FeeStructure(Base):
     """
     __tablename__ = "fee_structures"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    school_id = Column(UUID(as_uuid=True), ForeignKey("schools.id", ondelete="CASCADE"), nullable=False)
-    classroom_id = Column(UUID(as_uuid=True), ForeignKey("classrooms.id", ondelete="CASCADE"), nullable=False)
-    term_id = Column(UUID(as_uuid=True), ForeignKey("terms.id", ondelete="CASCADE"), nullable=False)
+    id = Column(Uuid, primary_key=True, default=uuid.uuid4)
+    school_id = Column(Uuid, ForeignKey("schools.id", ondelete="CASCADE"), nullable=False)
+    classroom_id = Column(Uuid, ForeignKey("classrooms.id", ondelete="CASCADE"), nullable=False)
+    term_id = Column(Uuid, ForeignKey("terms.id", ondelete="CASCADE"), nullable=False)
     
     total_amount = Column(Float, nullable=False) # Total fees for this class/term
     description = Column(Text, nullable=True) # Breakdown or notes
@@ -33,10 +32,10 @@ class Payment(Base):
     """
     __tablename__ = "payments"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    school_id = Column(UUID(as_uuid=True), ForeignKey("schools.id", ondelete="CASCADE"), nullable=False)
-    student_id = Column(UUID(as_uuid=True), ForeignKey("students.id", ondelete="CASCADE"), nullable=False)
-    term_id = Column(UUID(as_uuid=True), ForeignKey("terms.id", ondelete="CASCADE"), nullable=False)
+    id = Column(Uuid, primary_key=True, default=uuid.uuid4)
+    school_id = Column(Uuid, ForeignKey("schools.id", ondelete="CASCADE"), nullable=False)
+    student_id = Column(Uuid, ForeignKey("students.id", ondelete="CASCADE"), nullable=False)
+    term_id = Column(Uuid, ForeignKey("terms.id", ondelete="CASCADE"), nullable=False)
     
     amount_paid = Column(Float, nullable=False)
     date = Column(DateTime, default=datetime.utcnow)
@@ -44,7 +43,7 @@ class Payment(Base):
     reference_number = Column(String(100), unique=True, nullable=True) # Transaction ID
     
     # Audit: Who recorded this payment?
-    recorded_by_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
+    recorded_by_id = Column(Uuid, ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     
     # Timestamps
     created_at = Column(DateTime, default=datetime.utcnow)

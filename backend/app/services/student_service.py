@@ -37,8 +37,11 @@ class StudentService:
         return db_student
 
     @staticmethod
-    def get_students(db: Session, school_id: UUID) -> List[Student]:
-        return db.query(Student).filter(Student.school_id == school_id).all()
+    def get_students(db: Session, school_id: UUID, classroom_id: Optional[UUID] = None) -> List[Student]:
+        query = db.query(Student).filter(Student.school_id == school_id)
+        if classroom_id:
+            query = query.join(Enrollment).filter(Enrollment.classroom_id == classroom_id, Enrollment.status == "active")
+        return query.all()
 
     @staticmethod
     def enroll_student(db: Session, data: EnrollmentCreate) -> Enrollment:

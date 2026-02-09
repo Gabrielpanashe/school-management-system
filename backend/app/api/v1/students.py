@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from uuid import UUID
 
 from app.db.database import get_db
@@ -17,8 +17,12 @@ def create_student(data: StudentCreate, db: Session = Depends(get_db), current_u
     return StudentService.create_student(db, current_user.school_id, data)
 
 @router.get("/", response_model=List[StudentResponse])
-def get_students(db: Session = Depends(get_db), current_user = Depends(get_current_user)):
-    return StudentService.get_students(db, current_user.school_id)
+def get_students(
+    classroom_id: Optional[UUID] = None,
+    db: Session = Depends(get_db), 
+    current_user = Depends(get_current_user)
+):
+    return StudentService.get_students(db, current_user.school_id, classroom_id)
 
 @router.post("/enroll", response_model=EnrollmentResponse)
 def enroll_student(data: EnrollmentCreate, db: Session = Depends(get_db), current_user = Depends(get_current_user)):

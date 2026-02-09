@@ -1,5 +1,4 @@
-from sqlalchemy import Column, String, DateTime, ForeignKey, Boolean, Date
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, DateTime, ForeignKey, Boolean, Date, Uuid
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import uuid
@@ -12,8 +11,8 @@ class AcademicYear(Base):
     """
     __tablename__ = "academic_years"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    school_id = Column(UUID(as_uuid=True), ForeignKey("schools.id", ondelete="CASCADE"), nullable=False)
+    id = Column(Uuid, primary_key=True, default=uuid.uuid4)
+    school_id = Column(Uuid, ForeignKey("schools.id", ondelete="CASCADE"), nullable=False)
     
     name = Column(String(100), nullable=False)  # "2026"
     start_date = Column(Date, nullable=False)
@@ -32,8 +31,8 @@ class Term(Base):
     """
     __tablename__ = "terms"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    academic_year_id = Column(UUID(as_uuid=True), ForeignKey("academic_years.id", ondelete="CASCADE"), nullable=False)
+    id = Column(Uuid, primary_key=True, default=uuid.uuid4)
+    academic_year_id = Column(Uuid, ForeignKey("academic_years.id", ondelete="CASCADE"), nullable=False)
     
     name = Column(String(100), nullable=False)  # "First Term"
     start_date = Column(Date, nullable=False)
@@ -53,8 +52,8 @@ class Classroom(Base):
     """
     __tablename__ = "classrooms"
     
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    school_id = Column(UUID(as_uuid=True), ForeignKey("schools.id", ondelete="CASCADE"), nullable=False)
+    id = Column(Uuid, primary_key=True, default=uuid.uuid4)
+    school_id = Column(Uuid, ForeignKey("schools.id", ondelete="CASCADE"), nullable=False)
     
     name = Column(String(100), nullable=False)  # "Grade 10-A"
     grade_level = Column(String(50), nullable=False)  # "Grade 10"

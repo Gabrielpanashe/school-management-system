@@ -26,8 +26,12 @@ class Settings(BaseSettings):
     
     # CORS - Allow frontend to connect
     ALLOWED_ORIGINS: list = [
-        "http://localhost:3000",  # Next.js default
-        "http://localhost:8000",  # Backend
+        "http://localhost:3000",
+        "http://localhost:3080",
+        "http://localhost:8000",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3080",
+        "http://127.0.0.1:8000",
     ]
     
     class Config:

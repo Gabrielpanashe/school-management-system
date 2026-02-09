@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
-from typing import Optional
+from typing import Optional, Union
 from datetime import datetime
 from uuid import UUID
 
@@ -71,9 +71,6 @@ class UserLogin(BaseModel):
     )
 
 # ==========================================
-# Response Schemas (Output)
-# ==========================================
-
 class UserResponse(UserBase):
     """Schema for user data returned to client"""
     id: UUID

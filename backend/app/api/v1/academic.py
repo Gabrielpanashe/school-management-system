@@ -34,6 +34,10 @@ def create_term(data: TermCreate, db: Session = Depends(get_db), current_user = 
         raise HTTPException(status_code=403, detail="Forbidden")
     return AcademicService.create_term(db, data)
 
+@router.get("/terms", response_model=List[TermResponse])
+def get_terms(year_id: UUID, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    return AcademicService.get_terms(db, year_id)
+
 # --- Classrooms ---
 
 @router.post("/classrooms", response_model=ClassroomResponse, status_code=status.HTTP_201_CREATED)

@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from typing import Optional
 from datetime import datetime
+import uuid
 
 from app.models.user import User
 from app.schemas.user import UserCreate, UserLogin
@@ -115,14 +116,12 @@ class AuthService:
     def get_user_by_id(db: Session, user_id: str) -> Optional[User]:
         """
         Get user by ID.
-        
-        Args:
-            db: Database session
-            user_id: User UUID
-        
-        Returns:
-            User object or None
         """
+        if isinstance(user_id, str):
+            try:
+                user_id = uuid.UUID(user_id)
+            except ValueError:
+                pass
         return db.query(User).filter(User.id == user_id).first()
     
     @staticmethod

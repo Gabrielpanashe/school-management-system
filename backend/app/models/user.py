@@ -1,5 +1,4 @@
-from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, Boolean, DateTime, ForeignKey, Uuid
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import uuid
@@ -20,10 +19,10 @@ class User(Base):
     __tablename__ = "users"
     
     # Primary Key
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id = Column(Uuid, primary_key=True, default=uuid.uuid4)
     
     # School relationship (NULL for super_admin)
-    school_id = Column(UUID(as_uuid=True), ForeignKey("schools.id", ondelete="CASCADE"), nullable=True)
+    school_id = Column(Uuid, ForeignKey("schools.id", ondelete="CASCADE"), nullable=True)
     
     # Authentication fields
     email = Column(String(255), unique=True, nullable=False, index=True)
